@@ -1,0 +1,11 @@
+{
+	"singleQuote": true,
+	"trailingComma": "all",
+	"endOfLine": "lf",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "always"
+	},
+	"eslint.validate": [
+		"javascript"
+	]
+}
