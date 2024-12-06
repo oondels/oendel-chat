@@ -70,6 +70,12 @@ let UserService = class UserService {
         };
         return this.userRepository.save(user);
     }
+    async findByEmail(email) {
+        return this.userRepository.findOneBy({ email });
+    }
+    async findByUsername(username) {
+        return this.userRepository.findOneBy({ username });
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
