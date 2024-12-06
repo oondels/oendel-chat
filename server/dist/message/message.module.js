@@ -18,6 +18,7 @@ exports.MessageModule = MessageModule;
 exports.MessageModule = MessageModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([message_entity_1.Message])],
+        exports: [typeorm_1.TypeOrmModule],
         controllers: [message_controller_1.MessageController],
         providers: [message_service_1.MessageService],
     })

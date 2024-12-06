@@ -6,6 +6,7 @@ import {
   OneToMany,
   ManyToOne,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
@@ -22,4 +23,8 @@ export class Message {
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.messages, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

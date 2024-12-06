@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Message = void 0;
 const typeorm_1 = require("typeorm");
+const user_entity_1 = require("../../user/entities/user.entity");
 let Message = class Message {
 };
 exports.Message = Message;
@@ -30,6 +31,11 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)({ name: 'created_at' }),
     __metadata("design:type", Date)
 ], Message.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.messages, { onDelete: 'CASCADE' }),
+    (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
+    __metadata("design:type", user_entity_1.User)
+], Message.prototype, "user", void 0);
 exports.Message = Message = __decorate([
     (0, typeorm_1.Entity)({ schema: 'chat', name: 'messages' })
 ], Message);
