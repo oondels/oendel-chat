@@ -23,6 +23,12 @@ export class User {
   @Column({ type: 'text', nullable: true })
   password: string;
 
+  @Column({ type: 'text', nullable: false })
+  username: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[];
 }

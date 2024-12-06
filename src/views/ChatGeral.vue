@@ -4,35 +4,25 @@
 
     <div class="container-fluid">
       <ul class="message-list p-0 m-0">
-        <!-- Colocar bg-light e bg-primary para serem adaptados de acordo com a mesnagem (enviou ou recebeu) -->
-        <!-- Mensagem enviada -->
-        <li class="message-item sent d-flex flex-column align-items-end mb-3">
-          <div class="message-bubble px-3 py-2 bg-light text-dark">
-            <span class="message-user d-block fw-bold"> Hendrius: </span>
-            <span class="message-text"> Olá Boa Tarde! </span>
-            <div class="message-status d-flex align-items-center mt-1">
-              <i class="mdi fs-6 me-1 mdi-check text-primary"></i>
-              <small class="text-muted">Não Lida</small>
-            </div>
-          </div>
-        </li>
-
-        <!-- Mensagem recebida -->
-        <li class="message-item received d-flex flex-column align-items-start mb-3">
-          <div class="message-bubble px-3 py-2 bg-primary text-white">
-            <span class="message-user d-block fw-bold"> Fefe: </span>
-            <span class="message-text"> Olá Boa Tarde! </span>
-            <div class="message-status d-flex align-items-center mt-1">
-              <i class="mdi fs-6 me-1 mdi-check text-light"></i>
-              <small class="text-muted">Não Lida</small>
-            </div>
+        <li
+          v-for="message in oldMessages"
+          :key="message.id"
+          :class="message.user.id === userOn ? 'sent align-items-end' : 'received align-items-start'"
+          class="message-item d-flex flex-column mb-3"
+        >
+          <div
+            :class="message.user.id === userOn ? 'bg-light text-dark' : 'bg-primary text-white'"
+            class="message-bubble px-3 py-2"
+          >
+            <span class="message-user d-block fw-bold"> {{ message.user.username }} </span>
+            <span class="message-text"> {{ message.message }} </span>
           </div>
         </li>
       </ul>
 
       <div class="row mx-2">
         <v-text-field v-model="newMessage" density="compact" class="col-sm-9" variant="outlined" label="Label" />
-        <v-btn @click="teste" class="col-sm-3" color="primary" prepend-icon="mdi mdi-send">Enviar</v-btn>
+        <v-btn @click="sendMessage" class="col-sm-3" color="primary" prepend-icon="mdi mdi-send">Enviar</v-btn>
       </div>
     </div>
   </div>
@@ -41,7 +31,9 @@
 <script>
 import { io } from "socket.io-client";
 import { ref } from "vue";
-import ip from "../../ip";
+import ip from "@/ip";
+import axios from "axios";
+import VueJwtDecode from "vue-jwt-decode";
 
 export default {
   name: "ChatGeral",
@@ -49,14 +41,41 @@ export default {
   props: {},
 
   setup() {
-    // const socket = io(ip);
+    const socket = io(ip);
 
+    // SImulação de id de user on
+    // Pegar dados do user no token
+    const userOn = ref(1);
+
+    // Old Messages
+    const oldMessages = ref([]);
+    socket.emit("old-messages");
+    socket.on("old-messages", (messages) => {
+      oldMessages.value = messages;
+    });
+
+    // Send Messages
     const newMessage = ref(null);
+    const sendMessage = () => {
+      if (newMessage.value) {
+        let data = {
+          user: 1,
+          message: newMessage.value,
+        };
 
-    const teste = () => {
-      newMessage.value = null;
+        socket.emit("send-message", data);
+      }
     };
-    return { newMessage, teste };
+    socket.on("new-message", (message) => {
+      socket.emit("old-messages");
+    });
+
+    return {
+      newMessage,
+      sendMessage,
+      userOn,
+      oldMessages,
+    };
   },
 };
 </script>

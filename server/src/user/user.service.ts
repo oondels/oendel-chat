@@ -13,8 +13,8 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    // Verifica se o email já existe
     const { email } = createUserDto;
+
     const existingUser = await this.userRepository.findOne({
       where: { email },
     });
@@ -24,11 +24,18 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-
     const user = {
       ...createUserDto,
       password: hashedPassword,
     };
+
     return this.userRepository.save(user);
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ email });
+  }
+  async findByUsername(username: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ username });
   }
 }

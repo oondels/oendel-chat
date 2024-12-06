@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const message_entity_1 = require("../../message/entities/message.entity");
 let User = class User {
 };
 exports.User = User;
@@ -31,9 +32,17 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'text', nullable: false }),
+    __metadata("design:type", String)
+], User.prototype, "username", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)({ name: 'created_at' }),
     __metadata("design:type", Date)
 ], User.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => message_entity_1.Message, (message) => message.user),
+    __metadata("design:type", Array)
+], User.prototype, "messages", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)({ schema: 'chat', name: 'user' })
 ], User);
